@@ -1,25 +1,25 @@
-$LOAD_PATH.unshift File.expand_path(ENV['HOME'] + '/code/discourse_api_upstream/lib', __FILE__)
-require File.expand_path(ENV['HOME'] + '/code/discourse_api_upstream/lib/discourse_api', __FILE__)
+$LOAD_PATH.unshift File.expand_path(ENV['HOME'] + '/code/discourse_api/lib', __FILE__)
+require File.expand_path(ENV['HOME'] + '/code/discourse_api/lib/discourse_api', __FILE__)
 require 'json' 
 
 
 # Authenticate
 client = DiscourseApi::Client.new("http://localhost:3000")
-client.api_key = "2e07ed2f1570c9dee581a4f4442d0a3f17ce951c6eb2807389217ced82422272"
+client.api_key = "962b46c9d0240fe80d39ab4521577c93836edba8addc090ba2a66bfd0817584e"
 client.api_username = "blake"
 
 #client.api_key = nil
 #client.api_username = nil
 
 # Users
-user = {
-  name: "Norbert6",
-  email: "norbert6@minion.com",
-  password: "Password1!",
-  username: "norbert6",
-  active: "true",
-  approved: "true"
-}
+#user = {
+#  name: "Norbert6",
+#  email: "norbert6@minion.com",
+#  password: "Password1!",
+#  username: "norbert6",
+#  active: "true",
+#  approved: "true"
+#}
 
 #result = client.update_avatar(username: "norbert6", url: "http://vignette1.wikia.nocookie.net/despicableme/images/1/15/Jerryindespicableme.png")
 #puts result
@@ -36,6 +36,31 @@ user = {
 #updated_user = client.update_user('norbert5', user)
 #puts updated_user
 
+
+# Create multiple users 
+
+def random_string
+  ('a'..'z').to_a.shuffle.join
+end
+
+i = 0
+while i < 200 do
+
+  user = {
+    name: random_string[0,19],
+    email: "#{random_string}@example.com",
+    password: "Password1!",
+    username: random_string[0,19],
+    active: "true",
+    approved: "true",
+    approved_by_id: 1,
+    approved_at: DateTime.now
+  }
+  
+  new_user = client.create_user(user)
+  puts new_user
+  i += 1
+end
 
 # Categories
 #categories = client.categories
@@ -179,6 +204,6 @@ user = {
 #total_posts = posts['total']
 #puts total_posts
 
-totals = client.get_dashboard_stats_totals
+#totals = client.get_dashboard_stats_totals
 
-puts totals
+#puts totals
