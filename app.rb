@@ -11,6 +11,18 @@ client.api_username = "blake"
 #client.api_key = nil
 #client.api_username = nil
 
+# Get latest topics
+topics = client.category_latest_topics(category_slug: "lounge")
+puts topics
+
+# Get latest topics from a bad category
+#topics = client.category_latest_topics(category_slug: "not_found")
+#puts topics
+
+#topics = client.category_top_topics(category_slug: "lounge")
+#puts topics
+
+
 # Users
 #user = {
 #  name: "Norbert6",
@@ -39,28 +51,28 @@ client.api_username = "blake"
 
 # Create multiple users 
 
-def random_string
-  ('a'..'z').to_a.shuffle.join
-end
-
-i = 0
-while i < 200 do
-
-  user = {
-    name: random_string[0,19],
-    email: "#{random_string}@example.com",
-    password: "Password1!",
-    username: random_string[0,19],
-    active: "true",
-    approved: "true",
-    approved_by_id: 1,
-    approved_at: DateTime.now
-  }
-  
-  new_user = client.create_user(user)
-  puts new_user
-  i += 1
-end
+#def random_string
+#  ('a'..'z').to_a.shuffle.join
+#end
+#
+#i = 0
+#while i < 200 do
+#
+#  user = {
+#    name: random_string[0,19],
+#    email: "#{random_string}@example.com",
+#    password: "Password1!",
+#    username: random_string[0,19],
+#    active: "true",
+#    approved: "true",
+#    approved_by_id: 1,
+#    approved_at: DateTime.now
+#  }
+#  
+#  new_user = client.create_user(user)
+#  puts new_user
+#  i += 1
+#end
 
 # Categories
 #categories = client.categories
