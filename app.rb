@@ -1,19 +1,57 @@
 $LOAD_PATH.unshift File.expand_path(ENV['HOME'] + '/code/discourse_api/lib', __FILE__)
 require File.expand_path(ENV['HOME'] + '/code/discourse_api/lib/discourse_api', __FILE__)
-require 'json' 
+#require 'discourse_api'
+require 'json'
+require 'yaml'
+require 'date'
 
+@config = YAML.load_file('config.yml')
+site = ENV['SITE']
+
+api_key = @config[site]['api_key']
+api_username = @config[site]['api_username']
+
+HOST = @config[site]['host']
 
 # Authenticate
-client = DiscourseApi::Client.new("http://localhost:3000")
-client.api_key = "962b46c9d0240fe80d39ab4521577c93836edba8addc090ba2a66bfd0817584e"
-client.api_username = "blake"
+client = DiscourseApi::Client.new(HOST)
+client.api_key = @config[site]['api_key']
+client.api_username = @config[site]['api_username']
+
+client.sync_sso(
+  sso_secret: 'abcdefghij',
+  name: 'New Name',
+  username: 'new-name',
+  email: '7b11e58874d7b14689aba7f4b181a382@test.com',
+  external_id: '592',
+  "custom.user_field_1": '7b11e58874d7b14689aba7f4b181a382'
+)
+
+exit 0
+
+
+#puts client.post('/admin/plugins/explorer/queries/2/run', { params: '{"name":"system"}', explain: false })
+
+#client.ssl({:verify => false})
+
+# add users to group
+#group_id = 41
+#puts client.group_add(group_id, usernames: ["zOSRHECKTGYVJMQPBDU", "bnvdlaiymkhzpurjosx"])
+#puts client.group_add(group_id, user_emails: ["bnvdlaiymkhzpurjosx@example.com"])
+#puts client.group_remove(group_id, user_email: "baquomkeyctvnhwgjfz@example.com")
+#puts client.group_remove(group_id, usernames: ["zOSRHECKTGYVJMQPBDu", "bnvdlaiymkhzpurjosx"])
+
+
 
 #client.api_key = nil
 #client.api_username = nil
 
 # Get latest topics
-topics = client.category_latest_topics(category_slug: "lounge")
-puts topics
+#topics = client.category_latest_topics(category_slug: "lounge")
+#puts topics
+
+
+#puts client.site_setting_update(name: 'disable_emails', value: 'yes')
 
 # Get latest topics from a bad category
 #topics = client.category_latest_topics(category_slug: "not_found")
@@ -28,7 +66,7 @@ puts topics
 #  name: "Norbert6",
 #  email: "norbert6@minion.com",
 #  password: "Password1!",
-#  username: "norbert6",
+#  username: "6",
 #  active: "true",
 #  approved: "true"
 #}
@@ -51,28 +89,36 @@ puts topics
 
 # Create multiple users 
 
-#def random_string
-#  ('a'..'z').to_a.shuffle.join
-#end
-#
-#i = 0
-#while i < 200 do
-#
-#  user = {
-#    name: random_string[0,19],
-#    email: "#{random_string}@example.com",
-#    password: "Password1!",
-#    username: random_string[0,19],
-#    active: "true",
-#    approved: "true",
-#    approved_by_id: 1,
-#    approved_at: DateTime.now
-#  }
-#  
-#  new_user = client.create_user(user)
-#  puts new_user
-#  i += 1
-#end
+def random_string
+  ('a'..'z').to_a.shuffle.join
+end
+
+i = 0
+while i < 200 do
+
+  username = random_string[0,19]
+
+  user = {
+    name: username,
+    email: "#{username}@example.com",
+    password: "Password1!",
+    username: username.upcase,
+    'user_fields[1]' => random_string[0,10],
+    'user_fields[2]' => random_string[0,10]
+  }
+  
+  new_user = client.create_user(user)
+  puts new_user
+  user = {
+    approved: true,
+    approved_by_id: 1,
+    approved_at: DateTime.now
+  }
+  
+  updated_user = client.update_user(username, user)
+  i += 1
+  exit 1
+end
 
 # Categories
 #categories = client.categories
@@ -109,20 +155,22 @@ puts topics
 
 
 # Create a topic
-#def random_string
-#  ('a'..'z').to_a.shuffle.join
-#end
-#
-#i = 0
+def random_string
+  ('a'..'z').to_a.shuffle.join
+end
+
+i = 0
 #while i < 2 do
-#
+
 #  topic = {
 #    title: random_string,
 #    raw: random_string,
-#    category: "test_category" 
+#    #category: "test_category"
 #  }
 #  
+#  client.api_username = 'api'
 #  new_topic = client.create_topic(topic)
+#  puts new_topic
 #  i += 1
 #end
 #
@@ -131,56 +179,48 @@ puts topics
 #
 #puts new_topic
 #topic_id = new_topic['topic_id']
-
+#puts topic_id
+#
 # Get a topic
-
-#topic = client.topic(232)
-#puts topic
-#post_ids = [] 
+#params = {print: true}
+#topic = client.topic(8, params)
+#posts_count = topic['posts_count']
+#puts "post_count: #{posts_count}"
+#post_ids = []
 #downloaded_posts = []
 #posts = topic['post_stream']['posts']
-#
+#puts "posts count: #{posts.count}"
+
 #posts.each do |p|
-#   post_ids.push(p['id'])
-#   downloaded_posts.push(p['id'])
+#  post_ids.push(p['id'])
+#  downloaded_posts.push(p['id'])
+#  puts "#{p['post_number']}: #{p['cooked']}"
 #end
 #
-#puts ""
-#puts "stream"
-#puts ""
-#
 #stream = topic['post_stream']['stream']
-##puts stream
-#
-##stream.each do |s|
-##  puts s
-##end
-#
 #diff = stream - post_ids
-#puts diff.slice(0, 19)
-##posts_count = topic['posts_count']
-##puts posts_count
-##
 #
 #while diff.count > 0 do
 #
-#  response = client.topic_posts(232, diff.slice(0, 19)) 
+#  response = client.topic_posts(8, diff.slice(0, 19))
 #  response_posts = response['post_stream']['posts']
 #  response_posts.each do |p|
-#    downloaded_posts.push(p['id']) 
-#    puts "#{p['id']} #{p['cooked']}"
+#    downloaded_posts.push(p['id'])
+#    puts "#{p['post_number']}: #{p['cooked']}"
 #  end
 #  diff = stream - downloaded_posts
-#
 #end
-#response = client.topic_posts(232, post_ids) 
-##puts response['post_stream']
+
+#response = client.topic_posts(8, post_ids)
+#puts response['post_stream']
 #response_posts = response['post_stream']['posts']
 #response_posts.each do |p|
 #  puts p['id']
 #end
+
 # Create a post to a topic
 
+#topic_id = 8
 #i = 0
 #while i < 200 do
 #  post = {
@@ -189,8 +229,13 @@ puts topics
 #  }
 #  new_post = client.create_post(post)
 #  puts new_post
+#  sleep 1
 #  i += 1
 #end
+
+
+## Download all posts in a topic
+
 
 # Dashboard
 
