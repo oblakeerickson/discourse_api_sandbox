@@ -18,13 +18,20 @@ client = DiscourseApi::Client.new(HOST)
 client.api_key = @config[site]['api_key']
 client.api_username = @config[site]['api_username']
 
-client.sync_sso(
+def random_string
+  ('a'..'z').to_a.shuffle.join
+end
+
+puts client.sync_sso(
   sso_secret: 'abcdefghij',
-  name: 'New Name',
-  username: 'new-name',
-  email: '7b11e58874d7b14689aba7f4b181a382@test.com',
-  external_id: '592',
-  "custom.user_field_1": '7b11e58874d7b14689aba7f4b181a382'
+  name: random_string[0..10],
+  username: random_string[0..10], 
+  email: "#{random_string[0..10]}@example.com",
+  external_id: '225',
+  custom_fields: {
+    "user_field_1": random_string
+  }
+  #"custom.user_field_1": random_string
 )
 
 exit 0
@@ -89,9 +96,6 @@ exit 0
 
 # Create multiple users 
 
-def random_string
-  ('a'..'z').to_a.shuffle.join
-end
 
 i = 0
 while i < 200 do
