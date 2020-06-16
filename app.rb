@@ -22,16 +22,25 @@ def random_string
   ('a'..'z').to_a.shuffle.join
 end
 
+#puts client.sync_sso(
+#  sso_secret: 'abcdefghij',
+#  name: random_string[0..10],
+#  username: random_string[0..10], 
+#  email: "#{random_string[0..10]}@example.com",
+#  external_id: '225',
+#  custom_fields: {
+#    "user_field_1": random_string
+#  }
+#  #"custom.user_field_1": random_string
+#)
+
 puts client.sync_sso(
   sso_secret: 'abcdefghij',
-  name: random_string[0..10],
-  username: random_string[0..10], 
-  email: "#{random_string[0..10]}@example.com",
-  external_id: '225',
-  custom_fields: {
-    "user_field_1": random_string
-  }
-  #"custom.user_field_1": random_string
+  username: '24db27218ed09205a5a0', 
+  name: '24db27218ed09205a5a0', 
+  email: '24db27218ed09205a5a076983bf241ab@test.com',
+  external_id: '684',
+  avatar_url: 'https://d3bpeqsaub0i6y.cloudfront.net/user_avatar/meta.discourse.org/codinghorror/240/110067_2.png',
 )
 
 exit 0
