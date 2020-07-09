@@ -14,14 +14,39 @@ api_username = @config[site]['api_username']
 HOST = @config[site]['host']
 
 # Authenticate
-client = DiscourseApi::Client.new(HOST)
-client.api_key = @config[site]['api_key']
-client.api_username = @config[site]['api_username']
+@client = DiscourseApi::Client.new(HOST)
+@client.api_key = @config[site]['api_key']
+@client.api_username = @config[site]['api_username']
+
 
 def random_string
   ('a'..'z').to_a.shuffle.join
 end
 
+def create_topic
+  topic = {
+    title: random_string,
+    raw: random_string,
+    #category: "test_category"
+    tags: ['asdf', 'fdsa']
+  }
+  #@client.api_username = 'api'
+  new_topic = @client.create_topic(topic)
+  puts new_topic
+end
+
+command = ARGV[0]
+if command == nil || command == ""
+  puts "Please enter a valid command"
+  exit 1
+end
+
+case command
+when "create-topic"
+  create_topic
+end
+
+exit 0
 #puts client.sync_sso(
 #  sso_secret: 'abcdefghij',
 #  name: random_string[0..10],
@@ -34,16 +59,16 @@ end
 #  #"custom.user_field_1": random_string
 #)
 
-puts client.sync_sso(
-  sso_secret: 'abcdefghij',
-  username: '24db27218ed09205a5a0', 
-  name: '24db27218ed09205a5a0', 
-  email: '24db27218ed09205a5a076983bf241ab@test.com',
-  external_id: '684',
-  avatar_url: 'https://d3bpeqsaub0i6y.cloudfront.net/user_avatar/meta.discourse.org/codinghorror/240/110067_2.png',
-)
-
-exit 0
+#puts client.sync_sso(
+#  sso_secret: 'abcdefghij',
+#  username: '24db27218ed09205a5a0', 
+#  name: '24db27218ed09205a5a0', 
+#  email: '24db27218ed09205a5a076983bf241ab@test.com',
+#  external_id: '823',
+#  avatar_url: 'https://d3bpeqsaub0i6y.cloudfront.net/user_avatar/meta.discourse.org/%D0%B8%D0%BB%D1%8C%D1%8F_%D0%BA%D0%BE%D0%BC%D0%B0%D1%80%D0%BE%D0%B2/90/183981_2.png',
+#)
+#
+#exit 0
 
 
 #puts client.post('/admin/plugins/explorer/queries/2/run', { params: '{"name":"system"}', explain: false })
@@ -106,32 +131,32 @@ exit 0
 # Create multiple users 
 
 
-i = 0
-while i < 200 do
-
-  username = random_string[0,19]
-
-  user = {
-    name: username,
-    email: "#{username}@example.com",
-    password: "Password1!",
-    username: username.upcase,
-    'user_fields[1]' => random_string[0,10],
-    'user_fields[2]' => random_string[0,10]
-  }
-  
-  new_user = client.create_user(user)
-  puts new_user
-  user = {
-    approved: true,
-    approved_by_id: 1,
-    approved_at: DateTime.now
-  }
-  
-  updated_user = client.update_user(username, user)
-  i += 1
-  exit 1
-end
+#i = 0
+#while i < 200 do
+#
+#  username = random_string[0,19]
+#
+#  user = {
+#    name: username,
+#    email: "#{username}@example.com",
+#    password: "Password1!",
+#    username: username.upcase,
+#    'user_fields[1]' => random_string[0,10],
+#    'user_fields[2]' => random_string[0,10]
+#  }
+#  
+#  new_user = client.create_user(user)
+#  puts new_user
+#  user = {
+#    approved: true,
+#    approved_by_id: 1,
+#    approved_at: DateTime.now
+#  }
+#  
+#  updated_user = client.update_user(username, user)
+#  i += 1
+#  exit 1
+#end
 
 # Categories
 #categories = client.categories
@@ -168,22 +193,19 @@ end
 
 
 # Create a topic
-def random_string
-  ('a'..'z').to_a.shuffle.join
-end
 
-i = 0
+#i = 0
 #while i < 2 do
 
-#  topic = {
-#    title: random_string,
-#    raw: random_string,
-#    #category: "test_category"
-#  }
-#  
+  topic = {
+    title: random_string,
+    raw: random_string,
+    #category: "test_category"
+  }
+  
 #  client.api_username = 'api'
-#  new_topic = client.create_topic(topic)
-#  puts new_topic
+  new_topic = client.create_topic(topic)
+  puts new_topic
 #  i += 1
 #end
 #
