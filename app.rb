@@ -35,6 +35,18 @@ def create_topic
   puts new_topic
 end
 
+def get_dashboard_stats
+  puts @client.get_dashboard_stats
+end
+
+def get_dashboard_stats_totals
+  puts @client.get_dashboard_stats_totals
+end
+
+def badges
+  puts @client.badges
+end
+
 command = ARGV[0]
 if command == nil || command == ""
   puts "Please enter a valid command"
@@ -44,6 +56,12 @@ end
 case command
 when "create-topic"
   create_topic
+when "get-dashboard-stats"
+  get_dashboard_stats
+when "get-dashboard-stats-totals"
+  get_dashboard_stats_totals
+when "badges"
+  badges
 end
 
 exit 0
