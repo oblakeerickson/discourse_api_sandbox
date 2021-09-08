@@ -47,6 +47,18 @@ def badges
   puts @client.badges
 end
 
+def list_users
+  puts @client.list_users('active', { order: "created", asc: "true" })
+end
+
+def update_group_owners
+  puts @client.group_add_owners(41, { usernames: "48ce9df193c627574202" } )
+end
+
+def remove_group_owners
+  puts @client.group_remove_owners(41, { usernames: "48ce9df193c627574202" } )
+end
+
 command = ARGV[0]
 if command == nil || command == ""
   puts "Please enter a valid command"
@@ -62,6 +74,12 @@ when "get-dashboard-stats-totals"
   get_dashboard_stats_totals
 when "badges"
   badges
+when "list-users"
+  list_users
+when "update-group-owners"
+  update_group_owners
+when "remove-group-owners"
+  remove_group_owners
 end
 
 exit 0
