@@ -52,11 +52,21 @@ def list_users
 end
 
 def update_group_owners
-  puts @client.group_add_owners(41, { usernames: "48ce9df193c627574202" } )
+  group_id = ARGV[1]
+  usernames = ARGV[2]
+  puts @client.group_add_owners(group_id.to_i, { usernames: usernames } )
 end
 
 def remove_group_owners
-  puts @client.group_remove_owners(41, { usernames: "48ce9df193c627574202" } )
+  group_id = ARGV[1]
+  usernames = ARGV[2]
+  puts @client.group_remove_owners(group_id.to_i, { usernames: usernames } )
+end
+
+def group_add_user
+  group_id = ARGV[1]
+  username = ARGV[2]
+  puts @client.group_add(group_id.to_i, { username: username })
 end
 
 command = ARGV[0]
@@ -80,6 +90,8 @@ when "update-group-owners"
   update_group_owners
 when "remove-group-owners"
   remove_group_owners
+when "group-add-user"
+  group_add_user
 end
 
 exit 0
